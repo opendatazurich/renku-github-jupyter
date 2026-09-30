@@ -18,7 +18,9 @@ if ! curl -fsSL --max-time 60 -o "$TARGET" "$RAW_URL"; then
     exec /cnb/process/jupyterlab
 fi
 
-# Notebook im aktuellen Arbeitsverzeichnis ablegen und per Positional-Argument öffnen.
+# Notebook im aktuellen Arbeitsverzeichnis ablegen und per ARGS-JupyterLab-Flag öffnen
+# (der Launcher hängt in diesem Image keine Positional-Argumente an -> „Permission denied").
 NOTEBOOK="$PWD/$TARGET"
 echo "Öffnet: $NOTEBOOK"
-exec /cnb/process/jupyterlab "$NOTEBOOK"
+export ARGS="--ServerApp.root_dir=$PWD --ServerApp.default_url=/notebooks/$TARGET"
+exec /cnb/process/jupyterlab
